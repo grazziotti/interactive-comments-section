@@ -1,10 +1,13 @@
+import { Container } from './AppStyled'
+import { CommentArea } from './components/CommentArea'
 import { GlobalStyles } from './styles/global'
 
 const App = () => {
 	return (
-		<main>
+		<Container>
 			<GlobalStyles />
-		</main>
+			<CommentArea />
+		</Container>
 	)
 }
 
