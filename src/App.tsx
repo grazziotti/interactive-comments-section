@@ -1,12 +1,16 @@
-import { Container } from './AppStyled'
-import { CommentArea } from './components/CommentArea'
+import React from 'react'
+
+import { Container } from './AppStyles'
+import Comment from './components/Comment'
 import { GlobalStyles } from './styles/global'
 
-const App = () => {
+const App: React.FC = () => {
 	return (
 		<Container>
 			<GlobalStyles />
-			<CommentArea />
+			<main>
+				<Comment />
+			</main>
 		</Container>
 	)
 }
