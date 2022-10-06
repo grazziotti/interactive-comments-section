@@ -45,30 +45,12 @@ export const Container = styled.div`
 				border-radius: 0.3rem;
 			}
 
-			button {
+			.comment-btn-area {
 				display: flex;
 				align-items: center;
 				margin-left: auto;
-				font-size: ${font.size.body};
-				font-weight: ${font.weight.bold};
-				color: ${colors.moderateBlue};
-				transition: all 0.3s;
 
-				&:hover {
-					color: ${colors.lightGrayishBlue};
-				}
-
-				&:hover svg path {
-					fill: ${colors.lightGrayishBlue};
-				}
-
-				svg path {
-					transition: all 0.3s;
-				}
-
-				svg {
-					margin-right: 0.6rem;
-				}
+				gap: 0 1rem;
 			}
 		}
 

@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { ReactComponent as IconReply } from '../../assets/images/icon-reply.svg'
 import { commentType } from '../../types/commentType'
 import { userType } from '../../types/userType'
+import CommentBtn from '../CommentBtn'
 
 import CommentScore from '../CommentScore'
 
@@ -32,10 +32,18 @@ const CommentContainer: React.FC<Props> = ({
 					<span className='comment-posted-time'>
 						{commentData.createdAt}
 					</span>
-					<button>
-						<IconReply />
-						Reply
-					</button>
+					<div className='comment-btn-area'>
+						{commentData.user.username == currentUser.username ? (
+							<>
+								<CommentBtn type='delete' />
+								<CommentBtn type='update' />
+							</>
+						) : (
+							<>
+								<CommentBtn type='reply' />
+							</>
+						)}
+					</div>
 				</div>
 				<p className='comment-body'>
 					{replying && <span>@{commentData.replyingTo}</span>}
