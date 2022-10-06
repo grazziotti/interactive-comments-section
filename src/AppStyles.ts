@@ -6,7 +6,7 @@ export const Container = styled.main`
 	min-height: 100vh;
 	background-color: ${colors.veryLightGray};
 
-	main {
+	.comment-area {
 		max-width: 78.3rem;
 		width: 100%;
 		min-height: 100vh;

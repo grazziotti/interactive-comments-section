@@ -5,13 +5,17 @@ import { ReactComponent as IconMinus } from '../../assets/images/icon-minus.svg'
 
 import { Container } from './styles'
 
-const CommentScore: React.FC = () => {
+interface Props {
+	score: number
+}
+
+const CommentScore: React.FC<Props> = ({ score }: Props) => {
 	return (
 		<Container>
 			<button className='btn-plus'>
 				<IconPlus />
 			</button>
-			<div className='score'>12</div>
+			<div className='score'>{score}</div>
 			<button className='btn-minus'>
 				<IconMinus />
 			</button>

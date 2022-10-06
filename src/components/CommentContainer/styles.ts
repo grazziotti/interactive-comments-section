@@ -18,8 +18,8 @@ export const Container = styled.div`
 			margin-bottom: 1.6rem;
 
 			img {
-				width: 30px;
-				height: 30px;
+				width: 3rem;
+				height: 3rem;
 			}
 
 			.username {
@@ -33,6 +33,16 @@ export const Container = styled.div`
 				margin-left: 1.6rem;
 				font-size: ${font.size.body};
 				color: ${colors.grayishBlue};
+			}
+
+			.you-tag {
+				font-size: 1.3rem;
+				font-weight: ${font.weight.medium};
+				margin-left: 0.8rem;
+				padding: 0.2rem 0.8rem 0.3rem 0.8rem;
+				color: ${colors.white};
+				background-color: ${colors.moderateBlue};
+				border-radius: 0.3rem;
 			}
 
 			button {
@@ -63,12 +73,16 @@ export const Container = styled.div`
 		}
 
 		.comment-body {
-			max-width: 58rem;
 			font-size: ${font.size.body};
 			word-wrap: break-word;
-			word-break: break-all;
 			line-height: 1.5;
 			color: ${colors.grayishBlue};
+
+			span {
+				margin-right: 0.4rem;
+				font-weight: ${font.weight.medium};
+				color: ${colors.moderateBlue};
+			}
 		}
 	}
 `

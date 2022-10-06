@@ -1,31 +1,45 @@
 import React from 'react'
 
-import avatar from '../../assets/images/avatars/image-amyrobson.png'
 import { ReactComponent as IconReply } from '../../assets/images/icon-reply.svg'
+import { commentType } from '../../types/commentType'
+import { userType } from '../../types/userType'
 
 import CommentScore from '../CommentScore'
 
 import { Container } from './styles'
 
-const CommentContainer: React.FC = () => {
+interface Props {
+	commentData: commentType
+	currentUser: userType
+	replying?: boolean
+}
+
+const CommentContainer: React.FC<Props> = ({
+	commentData,
+	currentUser,
+	replying,
+}: Props) => {
 	return (
 		<Container>
-			<CommentScore />
+			<CommentScore score={commentData.score} />
 			<div className='comment-block'>
 				<div className='comment-header'>
-					<img src={avatar} alt='user avatar' />
-					<div className='username'>amyrobson</div>
-					<span className='comment-posted-time'>1 month ago</span>
+					<img src={commentData.user.image.png} alt='user avatar' />
+					<div className='username'>{commentData.user.username}</div>
+					{commentData.user.username === currentUser.username && (
+						<span className='you-tag'>you</span>
+					)}
+					<span className='comment-posted-time'>
+						{commentData.createdAt}
+					</span>
 					<button>
 						<IconReply />
 						Reply
 					</button>
 				</div>
 				<p className='comment-body'>
-					Impressive! Though it seems the drag feature could be
-					improved. But overall it looks incredible. You've nailed the
-					design and the responsiveness at various breakpoints works
-					really well.
+					{replying && <span>@{commentData.replyingTo}</span>}
+					{commentData.content}
 				</p>
 			</div>
 		</Container>
