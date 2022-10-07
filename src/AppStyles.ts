@@ -6,11 +6,13 @@ export const Container = styled.main`
 	min-height: 100vh;
 	background-color: ${colors.veryLightGray};
 
-	.comment-area {
-		max-width: 78.3rem;
-		width: 100%;
-		min-height: 100vh;
+	.app-container {
+		max-width: 78.5rem;
+		padding: 6.4rem 2.4rem;
 		margin: auto;
-		padding: 6.4rem 2.4rem 0 2.4rem;
+
+		.comment-area {
+			width: 100%;
+		}
 	}
 `

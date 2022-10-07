@@ -24,7 +24,10 @@ const CommentContainer: React.FC<Props> = ({
 			<CommentScore score={commentData.score} />
 			<div className='comment-block'>
 				<div className='comment-header'>
-					<img src={commentData.user.image.png} alt='user avatar' />
+					<img
+						src={commentData.user.image.png}
+						alt={`${commentData.user.username} avatar`}
+					/>
 					<div className='username'>{commentData.user.username}</div>
 					{commentData.user.username === currentUser.username && (
 						<span className='you-tag'>you</span>
