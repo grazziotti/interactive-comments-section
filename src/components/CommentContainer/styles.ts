@@ -5,7 +5,7 @@ export const Container = styled.div`
 	display: flex;
 	gap: 2.4rem;
 	padding: 2.4rem;
-	margin-top: 2.4rem;
+	margin-top: 2rem;
 	border-radius: 1rem;
 	background-color: ${colors.white};
 
@@ -15,7 +15,7 @@ export const Container = styled.div`
 		.comment-header {
 			display: flex;
 			align-items: center;
-			margin-bottom: 1.6rem;
+			margin-bottom: 1rem;
 
 			img {
 				width: 3rem;

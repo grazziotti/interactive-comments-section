@@ -4,33 +4,49 @@ import { Container } from './AppStyles'
 import AddComment from './components/AddComment'
 import Comment from './components/Comment'
 import { GlobalStyles } from './styles/global'
-import { dataType } from './types/dataType'
+import { commentType } from './types/commentType'
+import { userType } from './types/userType'
 
 const App: React.FC = () => {
-	const [data, setData] = useState<dataType>()
+	const [currentUser, setCurrentUser] = useState<userType>()
+	const [comments, setComments] = useState<commentType[]>()
 
 	useEffect(() => {
 		fetch('../data/data.json')
 			.then(res => res.json())
-			.then(data => setData(data))
+			.then(data => {
+				setCurrentUser(data.currentUser)
+
+				const localStorageComments = localStorage.getItem('comments')
+
+				if (localStorageComments) {
+					setComments(JSON.parse(localStorageComments))
+				} else {
+					localStorage.setItem(
+						'comments',
+						JSON.stringify(data.comments),
+					)
+					setComments(data.comments)
+				}
+			})
 	}, [])
 
 	return (
 		<Container>
 			<GlobalStyles />
 			<div className='app-container'>
-				{data && (
+				{comments && currentUser && (
 					<>
 						<div className='comment-area'>
-							{data.comments.map(commentData => (
+							{comments.map(commentData => (
 								<Comment
 									key={commentData.id}
 									commentData={commentData}
-									currentUser={data.currentUser}
+									currentUser={currentUser}
 								/>
 							))}
 						</div>
-						<AddComment currentUser={data.currentUser} />
+						<AddComment currentUser={currentUser} />
 					</>
 				)}
 			</div>
