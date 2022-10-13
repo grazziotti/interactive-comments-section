@@ -7,5 +7,6 @@ export type commentType = {
 	score: number
 	user: userType
 	replyingTo?: string
+	voted?: boolean
 	replies: commentType[]
 }

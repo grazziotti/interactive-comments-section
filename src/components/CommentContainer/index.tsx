@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { commentType } from '../../types/commentType'
+import { updateScoreType } from '../../types/updateScoreType'
 import { userType } from '../../types/userType'
 import CommentBtn from '../CommentBtn'
 
@@ -12,16 +13,24 @@ interface Props {
 	commentData: commentType
 	currentUser: userType
 	replying?: boolean
+	onUpdateScore: updateScoreType
 }
 
 const CommentContainer: React.FC<Props> = ({
 	commentData,
 	currentUser,
 	replying,
+	onUpdateScore,
 }: Props) => {
 	return (
 		<Container>
-			<CommentScore score={commentData.score} />
+			<CommentScore
+				score={commentData.score}
+				onUpdateScore={onUpdateScore}
+				commentData={commentData}
+				currentUser={currentUser}
+				replying={replying ? true : false}
+			/>
 			<div className='comment-block'>
 				<div className='comment-header'>
 					<img

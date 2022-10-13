@@ -11,14 +11,25 @@ export const Container = styled.div`
 	border-radius: 1rem;
 	background-color: ${colors.veryLightGray};
 
-	button {
+	.btn-plus,
+	.btn-minus {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		width: 2rem;
 		height: 2rem;
 
+		svg path {
+			transition: all 0.3s;
+		}
+
 		&:hover svg path {
+			fill: ${colors.moderateBlue};
+		}
+	}
+
+	.btn-plus.voted {
+		svg path {
 			fill: ${colors.moderateBlue};
 		}
 	}
