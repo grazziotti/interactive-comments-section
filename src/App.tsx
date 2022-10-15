@@ -99,6 +99,39 @@ const App: React.FC = () => {
 		return comment
 	}
 
+	const handleAddComment = (content: string) => {
+		if (comments && currentUser) {
+			const commentListLength = getCommentListLength()
+
+			if (!commentListLength) return
+
+			const newComments = [
+				...comments,
+				{
+					id: commentListLength + 1,
+					content: content,
+					createdAt: '1 month ago',
+					score: 0,
+					user: currentUser,
+					replies: [],
+				},
+			]
+
+			setComments(newComments)
+		}
+	}
+
+	const getCommentListLength = () => {
+		if (comments) {
+			const commentListLength = comments.reduce((acc, comment) => {
+				acc = acc + (comment.replies.length + 1)
+				return acc
+			}, 0)
+
+			return commentListLength
+		}
+	}
+
 	return (
 		<Container>
 			<GlobalStyles />
@@ -115,7 +148,10 @@ const App: React.FC = () => {
 								/>
 							))}
 						</div>
-						<AddComment currentUser={currentUser} />
+						<AddComment
+							currentUser={currentUser}
+							onAddComment={handleAddComment}
+						/>
 					</>
 				)}
 			</div>

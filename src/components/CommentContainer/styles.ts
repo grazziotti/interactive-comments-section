@@ -11,6 +11,7 @@ export const Container = styled.div`
 
 	.comment-block {
 		width: 100%;
+		max-width: 62.1rem;
 
 		.comment-header {
 			display: flex;
@@ -50,7 +51,7 @@ export const Container = styled.div`
 				align-items: center;
 				margin-left: auto;
 
-				gap: 0 1rem;
+				gap: 0 2.2rem;
 			}
 		}
 

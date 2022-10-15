@@ -24,14 +24,14 @@ const CommentScore: React.FC<Props> = ({
 	currentUser,
 }: Props) => {
 	const upVote = () => {
-		if (commentData.user !== currentUser) {
+		if (commentData.user.username !== currentUser.username) {
 			const newScore = score + 1
 			onUpdateScore(commentData.id, 'upVote', newScore, replying)
 		}
 	}
 
 	const downVote = () => {
-		if (commentData.user !== currentUser) {
+		if (commentData.user.username !== currentUser.username) {
 			const newScore = score - 1
 			onUpdateScore(commentData.id, 'downVote', newScore, replying)
 		}

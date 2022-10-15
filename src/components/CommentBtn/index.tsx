@@ -22,7 +22,7 @@ const CommentBtn: React.FC<Props> = ({ type }: Props) => {
 			{type === 'update' && (
 				<span className='edit'>
 					<IconEdit />
-					edit
+					Edit
 				</span>
 			)}
 			{type === 'delete' && (

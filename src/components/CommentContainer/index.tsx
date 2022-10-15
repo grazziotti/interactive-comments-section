@@ -35,7 +35,7 @@ const CommentContainer: React.FC<Props> = ({
 				<div className='comment-header'>
 					<img
 						src={commentData.user.image.png}
-						alt={`${commentData.user.username} avatar`}
+						alt={`${commentData.user.username} profile pic`}
 					/>
 					<div className='username'>{commentData.user.username}</div>
 					{commentData.user.username === currentUser.username && (
