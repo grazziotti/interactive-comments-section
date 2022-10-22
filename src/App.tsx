@@ -4,6 +4,7 @@ import { Container } from './AppStyles'
 import AddComment from './components/AddComment'
 import Comment from './components/Comment'
 import { GlobalStyles } from './styles/global'
+import { addCommentType } from './types/addCommentType'
 import { commentType } from './types/commentType'
 import { updateScoreType } from './types/updateScoreType'
 import { userType } from './types/userType'
@@ -53,7 +54,7 @@ const App: React.FC = () => {
 				setComments(newComments)
 			} else {
 				const newComments = comments.map(comment => {
-					const newReplies = comment.replies.map(reply => {
+					const newReplies = comment.replies?.map(reply => {
 						if (reply.id === commentId) {
 							return updateCommentScore(reply, method, newScore)
 						}
@@ -75,10 +76,10 @@ const App: React.FC = () => {
 		method: 'upVote' | 'downVote',
 		newScore: number,
 	) => {
-		const alreadyVote =
-			comment.voted === undefined || comment.voted === false
+		const alreadyVoted =
+			comment.voted !== undefined && comment.voted !== false
 
-		if (alreadyVote) {
+		if (!alreadyVoted) {
 			if (method === 'upVote') {
 				comment = {
 					...comment,
@@ -99,7 +100,17 @@ const App: React.FC = () => {
 		return comment
 	}
 
-	const handleAddComment = (content: string) => {
+	const handleAddComment: addCommentType = (...args) => {
+		const [content, userToReplyId, replyingTo] = args
+
+		if (!userToReplyId && !replyingTo) {
+			addComment(content)
+		} else {
+			replyComment(content, userToReplyId, replyingTo)
+		}
+	}
+
+	const addComment = (content: string) => {
 		if (comments && currentUser) {
 			const commentListLength = getCommentListLength()
 
@@ -121,10 +132,41 @@ const App: React.FC = () => {
 		}
 	}
 
+	const replyComment = (
+		content: string,
+		userReplyToId: number,
+		replyingTo: string,
+	) => {
+		if (comments && currentUser) {
+			if (userReplyToId && replyingTo) {
+				const commentListLength = getCommentListLength()
+
+				if (!commentListLength) return
+
+				const newComments = comments.map(comment => {
+					if (comment.id === userReplyToId) {
+						comment.replies?.push({
+							id: commentListLength + 1,
+							content,
+							createdAt: '1 month ago',
+							replyingTo,
+							score: 0,
+							user: currentUser,
+						})
+					}
+					return comment
+				})
+
+				setComments(newComments)
+			}
+		}
+	}
+
 	const getCommentListLength = () => {
 		if (comments) {
 			const commentListLength = comments.reduce((acc, comment) => {
-				acc = acc + (comment.replies.length + 1)
+				if (!comment.replies) return acc
+				acc = acc + (comment.replies?.length + 1)
 				return acc
 			}, 0)
 
@@ -145,12 +187,14 @@ const App: React.FC = () => {
 									commentData={commentData}
 									currentUser={currentUser}
 									onUpdateScore={handleUpdateScore}
+									onReply={handleAddComment}
 								/>
 							))}
 						</div>
 						<AddComment
 							currentUser={currentUser}
 							onAddComment={handleAddComment}
+							type={'send'}
 						/>
 					</>
 				)}

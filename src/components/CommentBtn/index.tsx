@@ -8,11 +8,12 @@ import { Container } from './styles'
 
 interface Props {
 	type: 'reply' | 'update' | 'delete'
+	onClick?: () => void
 }
 
-const CommentBtn: React.FC<Props> = ({ type }: Props) => {
+const CommentBtn: React.FC<Props> = ({ type, onClick }: Props) => {
 	return (
-		<Container>
+		<Container onClick={onClick}>
 			{type === 'reply' && (
 				<span className='reply'>
 					<IconReply />
