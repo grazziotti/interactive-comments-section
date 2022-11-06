@@ -4,16 +4,22 @@ import { ReactComponent as IconReply } from '../../assets/images/icon-reply.svg'
 import { ReactComponent as IconEdit } from '../../assets/images/icon-edit.svg'
 import { ReactComponent as IconDelete } from '../../assets/images/icon-delete.svg'
 
+type SimpleSpread<L, R> = R & Pick<L, Exclude<keyof L, keyof R>>
+
 import { Container } from './styles'
 
-interface Props {
+interface PropsExtra {
 	type: 'reply' | 'update' | 'delete'
-	onClick?: () => void
 }
 
-const CommentBtn: React.FC<Props> = ({ type, onClick }: Props) => {
+type Props = SimpleSpread<
+	React.ButtonHTMLAttributes<HTMLButtonElement>,
+	PropsExtra
+>
+
+const CommentBtn: React.FC<Props> = ({ type, ...props }: Props) => {
 	return (
-		<Container onClick={onClick}>
+		<Container {...props}>
 			{type === 'reply' && (
 				<span className='reply'>
 					<IconReply />

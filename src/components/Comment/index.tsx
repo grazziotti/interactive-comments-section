@@ -1,6 +1,7 @@
 import React from 'react'
 import { addCommentType } from '../../types/addCommentType'
 import { commentType } from '../../types/commentType'
+import { updateCommentType } from '../../types/updateCommentType'
 import { updateScoreType } from '../../types/updateScoreType'
 import { userType } from '../../types/userType'
 import CommentContainer from '../CommentContainer'
@@ -12,6 +13,7 @@ interface Props {
 	currentUser: userType
 	onUpdateScore: updateScoreType
 	onReply: addCommentType
+	onUpdate: updateCommentType
 }
 
 const Comment: React.FC<Props> = ({
@@ -19,6 +21,7 @@ const Comment: React.FC<Props> = ({
 	currentUser,
 	onUpdateScore,
 	onReply,
+	onUpdate,
 }: Props) => {
 	return (
 		<Container>
@@ -27,6 +30,7 @@ const Comment: React.FC<Props> = ({
 				currentUser={currentUser}
 				onUpdateScore={onUpdateScore}
 				onReply={onReply}
+				onUpdate={onUpdate}
 				userToReplyId={commentData.id}
 			/>
 			<div className='comment-replies'>
@@ -36,6 +40,7 @@ const Comment: React.FC<Props> = ({
 						currentUser={currentUser}
 						onUpdateScore={onUpdateScore}
 						onReply={onReply}
+						onUpdate={onUpdate}
 						key={replyData.id}
 						replying
 						userToReplyId={commentData.id}

@@ -11,13 +11,26 @@ export const Container = styled.div`
 		background-color: ${colors.white};
 
 		.comment-block {
+			display: flex;
+			flex-direction: column;
 			width: 100%;
 			max-width: 62.1rem;
+			gap: 1rem;
+
+			.comment-body--edit {
+				display: flex;
+				flex-direction: column;
+				gap: 1rem;
+
+				.btn-container {
+					display: flex;
+					justify-content: end;
+				}
+			}
 
 			.comment-header {
 				display: flex;
 				align-items: center;
-				margin-bottom: 1rem;
 
 				img {
 					width: 3rem;
@@ -68,6 +81,12 @@ export const Container = styled.div`
 					color: ${colors.moderateBlue};
 				}
 			}
+		}
+	}
+
+	.comment-area.reply {
+		.comment-block {
+			max-width: 52.7rem;
 		}
 	}
 `

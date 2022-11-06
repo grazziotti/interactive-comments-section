@@ -1,13 +1,16 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { addCommentType } from '../../types/addCommentType'
 
 import { commentType } from '../../types/commentType'
+import { updateCommentType } from '../../types/updateCommentType'
 import { updateScoreType } from '../../types/updateScoreType'
 import { userType } from '../../types/userType'
+import ActionBtn from '../ActionBtn'
 import AddComment from '../AddComment'
 import CommentBtn from '../CommentBtn'
 
 import CommentScore from '../CommentScore'
+import TextArea from '../TextArea'
 
 import { Container } from './styles'
 
@@ -18,6 +21,7 @@ interface Props {
 	onUpdateScore: updateScoreType
 	onReply: addCommentType
 	userToReplyId?: number
+	onUpdate: updateCommentType
 }
 
 const CommentContainer: React.FC<Props> = ({
@@ -27,12 +31,65 @@ const CommentContainer: React.FC<Props> = ({
 	onUpdateScore,
 	onReply,
 	userToReplyId,
+	onUpdate,
 }: Props) => {
 	const [showAddComment, setShowAddComment] = useState(false)
+	const [showEditComment, setShowEditComment] = useState(false)
+	const [content, setContent] = useState(commentData.content)
+
+	const handleTextArea = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+		setContent(event.target.value)
+	}
+
+	const isEmptyOrSpaces = (str: string) => {
+		return str === null || str.match(/^ *$/) !== null
+	}
+
+	const handleUpdateComment = () => {
+		if (!isEmptyOrSpaces(content)) {
+			if (replying) {
+				const hasUsername =
+					content.slice(0, `${commentData.replyingTo}`.length + 3) ===
+						`@${commentData.replyingTo}, ` ||
+					content.slice(0, `${commentData.replyingTo}`.length + 2) ===
+						`@${commentData.replyingTo},` ||
+					content.slice(0, `${commentData.replyingTo}`.length + 2) ===
+						`@${commentData.replyingTo} ` ||
+					content.slice(0, `${commentData.replyingTo}`.length + 1) ===
+						`@${commentData.replyingTo}`
+
+				if (hasUsername) {
+					const newContent = content.substring(
+						content.indexOf(`@${commentData.replyingTo},`) +
+							`@${commentData.replyingTo},`.length,
+					)
+
+					if (!isEmptyOrSpaces(newContent.trim())) {
+						setContent(newContent)
+						onUpdate(newContent, commentData.id, replying)
+						setShowEditComment(false)
+					}
+				} else {
+					onUpdate(content, commentData.id, replying)
+					setShowEditComment(false)
+				}
+			} else {
+				onUpdate(content, commentData.id, false)
+				setShowEditComment(false)
+			}
+		}
+	}
+
+	useEffect(() => {
+		if (showEditComment && replying) {
+			const newContent = `@${commentData.replyingTo},${content}`
+			setContent(newContent)
+		}
+	}, [showEditComment])
 
 	return (
 		<Container>
-			<div className='comment-area'>
+			<div className={`comment-area ${replying ? 'reply' : ''}`}>
 				<CommentScore
 					score={commentData.score}
 					onUpdateScore={onUpdateScore}
@@ -60,7 +117,10 @@ const CommentContainer: React.FC<Props> = ({
 							currentUser.username ? (
 								<>
 									<CommentBtn type='delete' />
-									<CommentBtn type='update' />
+									<CommentBtn
+										type='update'
+										onClick={() => setShowEditComment(true)}
+									/>
 								</>
 							) : (
 								<>
@@ -72,10 +132,34 @@ const CommentContainer: React.FC<Props> = ({
 							)}
 						</div>
 					</div>
-					<p className='comment-body'>
-						{replying && <span>@{commentData.replyingTo}</span>}
-						{commentData.content}
-					</p>
+					{!showEditComment && (
+						<p className='comment-body'>
+							{replying && <span>@{commentData.replyingTo}</span>}
+							{content}
+						</p>
+					)}
+
+					{showEditComment && (
+						<div className='comment-body--edit'>
+							<TextArea
+								value={content}
+								onChange={handleTextArea}
+								autoFocus
+								onFocus={e =>
+									e.currentTarget.setSelectionRange(
+										e.currentTarget.value.length,
+										e.currentTarget.value.length,
+									)
+								}
+							/>
+							<div className='btn-container'>
+								<ActionBtn
+									title={'UPDATE'}
+									onClick={() => handleUpdateComment()}
+								/>
+							</div>
+						</div>
+					)}
 				</div>
 			</div>
 			{showAddComment && (

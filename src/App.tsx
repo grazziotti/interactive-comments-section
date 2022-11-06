@@ -6,6 +6,7 @@ import Comment from './components/Comment'
 import { GlobalStyles } from './styles/global'
 import { addCommentType } from './types/addCommentType'
 import { commentType } from './types/commentType'
+import { updateCommentType } from './types/updateCommentType'
 import { updateScoreType } from './types/updateScoreType'
 import { userType } from './types/userType'
 
@@ -162,6 +163,41 @@ const App: React.FC = () => {
 		}
 	}
 
+	const updateComment: updateCommentType = (...args) => {
+		const [content, commentId, replying] = args
+
+		if (comments) {
+			if (!replying) {
+				const newComments = comments.map(comment => {
+					if (comment.id === commentId) {
+						comment.content = content
+					}
+
+					return comment
+				})
+
+				setComments(newComments)
+			} else {
+				const newComments = comments.map(comment => {
+					const newReplies = comment.replies?.map(reply => {
+						if (reply.id === commentId) {
+							reply.content = content
+						}
+
+						return reply
+					})
+					if (newReplies) {
+						comment.replies = newReplies
+					}
+
+					return comment
+				})
+
+				setComments(newComments)
+			}
+		}
+	}
+
 	const getCommentListLength = () => {
 		if (comments) {
 			const commentListLength = comments.reduce((acc, comment) => {
@@ -188,6 +224,7 @@ const App: React.FC = () => {
 									currentUser={currentUser}
 									onUpdateScore={handleUpdateScore}
 									onReply={handleAddComment}
+									onUpdate={updateComment}
 								/>
 							))}
 						</div>

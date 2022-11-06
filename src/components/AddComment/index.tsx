@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { addCommentType } from '../../types/addCommentType'
 import { userType } from '../../types/userType'
+import ActionBtn from '../ActionBtn'
+import TextArea from '../TextArea'
 
 import { Container } from './styles'
 
@@ -56,14 +58,19 @@ const AddComment: React.FC<Props> = ({
 							`@${replyingTo},`.length,
 					)
 
-					onAddComment(newComment.trim(), userToReplyId, replyingTo)
+					if (!isEmptyOrSpaces(newComment.trim()))
+						onAddComment(
+							newComment.trim(),
+							userToReplyId,
+							replyingTo,
+						)
 				} else {
 					onAddComment(comment.trim(), userToReplyId, replyingTo)
 				}
 			}
-
-			if (onDone) onDone()
 		}
+
+		if (onDone) onDone()
 	}
 
 	return (
@@ -72,8 +79,7 @@ const AddComment: React.FC<Props> = ({
 				src={currentUser.image.png}
 				alt={`${currentUser.username} profile pic`}
 			/>
-			<textarea
-				className='comment-textarea'
+			<TextArea
 				placeholder='Add a comment...'
 				value={comment}
 				onChange={handleTextArea}
@@ -86,9 +92,10 @@ const AddComment: React.FC<Props> = ({
 				}
 			/>
 			<div className='btn-container'>
-				<button onClick={type == 'send' ? addComment : replyComment}>
-					{type.toUpperCase()}
-				</button>
+				<ActionBtn
+					title={type.toUpperCase()}
+					onClick={type == 'send' ? addComment : replyComment}
+				/>
 			</div>
 		</Container>
 	)
