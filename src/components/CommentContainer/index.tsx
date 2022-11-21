@@ -22,6 +22,7 @@ interface Props {
 	onReply: addCommentType
 	userToReplyId?: number
 	onUpdate: updateCommentType
+	onOpenDeleteModal: (commentId: number) => void
 }
 
 const CommentContainer: React.FC<Props> = ({
@@ -32,6 +33,7 @@ const CommentContainer: React.FC<Props> = ({
 	onReply,
 	userToReplyId,
 	onUpdate,
+	onOpenDeleteModal,
 }: Props) => {
 	const [showAddComment, setShowAddComment] = useState(false)
 	const [showEditComment, setShowEditComment] = useState(false)
@@ -80,6 +82,12 @@ const CommentContainer: React.FC<Props> = ({
 		}
 	}
 
+	const handleDeleteComment = () => {
+		if (commentData.user.username === currentUser.username) {
+			onOpenDeleteModal(commentData.id)
+		}
+	}
+
 	useEffect(() => {
 		if (showEditComment && replying) {
 			const newContent = `@${commentData.replyingTo},${content}`
@@ -116,7 +124,10 @@ const CommentContainer: React.FC<Props> = ({
 							{commentData.user.username ==
 							currentUser.username ? (
 								<>
-									<CommentBtn type='delete' />
+									<CommentBtn
+										type='delete'
+										onClick={handleDeleteComment}
+									/>
 									<CommentBtn
 										type='update'
 										onClick={() => setShowEditComment(true)}

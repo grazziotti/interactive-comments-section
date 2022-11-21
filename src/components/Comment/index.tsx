@@ -14,6 +14,7 @@ interface Props {
 	onUpdateScore: updateScoreType
 	onReply: addCommentType
 	onUpdate: updateCommentType
+	onOpenDeleteModal: (commentId: number) => void
 }
 
 const Comment: React.FC<Props> = ({
@@ -22,6 +23,7 @@ const Comment: React.FC<Props> = ({
 	onUpdateScore,
 	onReply,
 	onUpdate,
+	onOpenDeleteModal,
 }: Props) => {
 	return (
 		<Container>
@@ -31,6 +33,7 @@ const Comment: React.FC<Props> = ({
 				onUpdateScore={onUpdateScore}
 				onReply={onReply}
 				onUpdate={onUpdate}
+				onOpenDeleteModal={onOpenDeleteModal}
 				userToReplyId={commentData.id}
 			/>
 			<div className='comment-replies'>
@@ -41,6 +44,7 @@ const Comment: React.FC<Props> = ({
 						onUpdateScore={onUpdateScore}
 						onReply={onReply}
 						onUpdate={onUpdate}
+						onOpenDeleteModal={onOpenDeleteModal}
 						key={replyData.id}
 						replying
 						userToReplyId={commentData.id}

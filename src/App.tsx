@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Container } from './AppStyles'
 import AddComment from './components/AddComment'
 import Comment from './components/Comment'
+import DeleteModal from './components/DeleteModal'
 import { GlobalStyles } from './styles/global'
 import { addCommentType } from './types/addCommentType'
 import { commentType } from './types/commentType'
@@ -13,6 +14,8 @@ import { userType } from './types/userType'
 const App: React.FC = () => {
 	const [currentUser, setCurrentUser] = useState<userType>()
 	const [comments, setComments] = useState<commentType[]>()
+	const [showDeleteModal, setShowDeleteModal] = useState(false)
+	const [commentToDelete, setCommentToDelete] = useState(-1)
 
 	useEffect(() => {
 		fetch('../data/data.json')
@@ -39,6 +42,12 @@ const App: React.FC = () => {
 			localStorage.setItem('comments', JSON.stringify(comments))
 		}
 	}, [comments])
+
+	useEffect(() => {
+		const htmlTag = document.querySelector('html')
+		if (htmlTag !== null)
+			htmlTag.style.overflow = showDeleteModal ? 'hidden' : 'scroll'
+	}, [showDeleteModal])
 
 	const handleUpdateScore: updateScoreType = (...args) => {
 		const [commentId, method, newScore, replying] = args
@@ -113,14 +122,14 @@ const App: React.FC = () => {
 
 	const addComment = (content: string) => {
 		if (comments && currentUser) {
-			const commentListLength = getCommentListLength()
+			const lastCommentId = getLastCommentId()
 
-			if (!commentListLength) return
+			if (!lastCommentId) return
 
 			const newComments = [
 				...comments,
 				{
-					id: commentListLength + 1,
+					id: lastCommentId + 1,
 					content: content,
 					createdAt: '1 month ago',
 					score: 0,
@@ -140,14 +149,14 @@ const App: React.FC = () => {
 	) => {
 		if (comments && currentUser) {
 			if (userReplyToId && replyingTo) {
-				const commentListLength = getCommentListLength()
+				const lastCommentId = getLastCommentId()
 
-				if (!commentListLength) return
+				if (!lastCommentId) return
 
 				const newComments = comments.map(comment => {
 					if (comment.id === userReplyToId) {
 						comment.replies?.push({
-							id: commentListLength + 1,
+							id: lastCommentId + 1,
 							content,
 							createdAt: '1 month ago',
 							replyingTo,
@@ -198,15 +207,55 @@ const App: React.FC = () => {
 		}
 	}
 
-	const getCommentListLength = () => {
+	const openDeleteModal = (commentId: number) => {
+		setShowDeleteModal(true)
+		setCommentToDelete(commentId)
+	}
+
+	const closeDeleteModal = () => {
+		setShowDeleteModal(false)
+		setCommentToDelete(-1)
+	}
+
+	const deleteComment = () => {
+		const newComments = comments?.filter(comment => {
+			if (comment.id === commentToDelete) {
+				return
+			}
+
+			const newReplies = comment.replies?.filter(reply => {
+				if (reply.id === commentToDelete) {
+					return
+				}
+
+				return reply
+			})
+
+			comment.replies = newReplies
+
+			return comment
+		})
+
+		setComments(newComments)
+		closeDeleteModal()
+	}
+
+	const getLastCommentId = () => {
 		if (comments) {
-			const commentListLength = comments.reduce((acc, comment) => {
-				if (!comment.replies) return acc
-				acc = acc + (comment.replies?.length + 1)
+			const lastCommentId = comments.reduce((acc, comment) => {
+				if (comment.replies && comment.replies.length > 0) {
+					const lastReplyId = comment.replies.slice(-1)[0].id
+
+					acc = lastReplyId > acc ? lastReplyId : acc
+
+					return acc
+				}
+
+				acc = comment.id > acc ? comment.id : acc
 				return acc
 			}, 0)
 
-			return commentListLength
+			return lastCommentId
 		}
 	}
 
@@ -225,6 +274,7 @@ const App: React.FC = () => {
 									onUpdateScore={handleUpdateScore}
 									onReply={handleAddComment}
 									onUpdate={updateComment}
+									onOpenDeleteModal={openDeleteModal}
 								/>
 							))}
 						</div>
@@ -233,6 +283,12 @@ const App: React.FC = () => {
 							onAddComment={handleAddComment}
 							type={'send'}
 						/>
+						{showDeleteModal && (
+							<DeleteModal
+								onCancel={closeDeleteModal}
+								onDelete={deleteComment}
+							/>
+						)}
 					</>
 				)}
 			</div>
