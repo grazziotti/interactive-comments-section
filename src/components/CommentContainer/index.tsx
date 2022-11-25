@@ -5,6 +5,8 @@ import { commentType } from '../../types/commentType'
 import { updateCommentType } from '../../types/updateCommentType'
 import { updateScoreType } from '../../types/updateScoreType'
 import { userType } from '../../types/userType'
+import { isEmptyOrSpaces } from '../../utils/checkEmptyString'
+import { commentPostedTime } from '../../utils/time'
 import ActionBtn from '../ActionBtn'
 import AddComment from '../AddComment'
 import CommentBtn from '../CommentBtn'
@@ -39,54 +41,75 @@ const CommentContainer: React.FC<Props> = ({
 	const [showEditComment, setShowEditComment] = useState(false)
 	const [content, setContent] = useState(commentData.content)
 
-	const handleTextArea = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+	const [time, setTime] = useState('')
+	const createdAt = new Date(commentData.createdAt)
+	const today = new Date()
+
+	const handleTextAreaChange = (
+		event: React.ChangeEvent<HTMLTextAreaElement>,
+	) => {
 		setContent(event.target.value)
 	}
 
-	const isEmptyOrSpaces = (str: string) => {
-		return str === null || str.match(/^ *$/) !== null
-	}
+	const handleUpdateActionBtnClick = () => {
+		if (commentData.user.username === currentUser.username) {
+			if (!isEmptyOrSpaces(content)) {
+				if (replying) {
+					const hasUsername =
+						content.slice(
+							0,
+							`${commentData.replyingTo}`.length + 3,
+						) === `@${commentData.replyingTo}, ` ||
+						content.slice(
+							0,
+							`${commentData.replyingTo}`.length + 2,
+						) === `@${commentData.replyingTo},` ||
+						content.slice(
+							0,
+							`${commentData.replyingTo}`.length + 2,
+						) === `@${commentData.replyingTo} ` ||
+						content.slice(
+							0,
+							`${commentData.replyingTo}`.length + 1,
+						) === `@${commentData.replyingTo}`
 
-	const handleUpdateComment = () => {
-		if (!isEmptyOrSpaces(content)) {
-			if (replying) {
-				const hasUsername =
-					content.slice(0, `${commentData.replyingTo}`.length + 3) ===
-						`@${commentData.replyingTo}, ` ||
-					content.slice(0, `${commentData.replyingTo}`.length + 2) ===
-						`@${commentData.replyingTo},` ||
-					content.slice(0, `${commentData.replyingTo}`.length + 2) ===
-						`@${commentData.replyingTo} ` ||
-					content.slice(0, `${commentData.replyingTo}`.length + 1) ===
-						`@${commentData.replyingTo}`
+					if (hasUsername) {
+						const newContent = content.substring(
+							content.indexOf(`@${commentData.replyingTo},`) +
+								`@${commentData.replyingTo},`.length,
+						)
 
-				if (hasUsername) {
-					const newContent = content.substring(
-						content.indexOf(`@${commentData.replyingTo},`) +
-							`@${commentData.replyingTo},`.length,
-					)
-
-					if (!isEmptyOrSpaces(newContent.trim())) {
-						setContent(newContent)
-						onUpdate(newContent, commentData.id, replying)
+						if (!isEmptyOrSpaces(newContent.trim())) {
+							setContent(newContent)
+							onUpdate(newContent, commentData.id, replying)
+							setShowEditComment(false)
+						}
+					} else {
+						onUpdate(content, commentData.id, replying)
 						setShowEditComment(false)
 					}
 				} else {
-					onUpdate(content, commentData.id, replying)
+					onUpdate(content, commentData.id, false)
 					setShowEditComment(false)
 				}
-			} else {
-				onUpdate(content, commentData.id, false)
-				setShowEditComment(false)
 			}
 		}
 	}
 
-	const handleDeleteComment = () => {
+	const handleDeleteBtnClick = () => {
 		if (commentData.user.username === currentUser.username) {
 			onOpenDeleteModal(commentData.id)
 		}
 	}
+
+	useEffect(() => {
+		const timeout = setTimeout(() => {
+			const differenceInTime = today.getTime() - createdAt.getTime()
+			setTime(commentPostedTime(differenceInTime))
+		}, 1000)
+
+		return () => clearTimeout(timeout)
+	}, [])
 
 	useEffect(() => {
 		if (showEditComment && replying) {
@@ -97,7 +120,7 @@ const CommentContainer: React.FC<Props> = ({
 
 	return (
 		<Container>
-			<div className={`comment-area ${replying ? 'reply' : ''}`}>
+			<div className={`comment-area ${replying ? 'reply' : ''} `}>
 				<CommentScore
 					score={commentData.score}
 					onUpdateScore={onUpdateScore}
@@ -118,7 +141,7 @@ const CommentContainer: React.FC<Props> = ({
 							<span className='you-tag'>you</span>
 						)}
 						<span className='comment-posted-time'>
-							{commentData.createdAt}
+							{time + ' ago'}
 						</span>
 						<div className='comment-btn-area'>
 							{commentData.user.username ==
@@ -126,7 +149,7 @@ const CommentContainer: React.FC<Props> = ({
 								<>
 									<CommentBtn
 										type='delete'
-										onClick={handleDeleteComment}
+										onClick={handleDeleteBtnClick}
 									/>
 									<CommentBtn
 										type='update'
@@ -154,7 +177,7 @@ const CommentContainer: React.FC<Props> = ({
 						<div className='comment-body--edit'>
 							<TextArea
 								value={content}
-								onChange={handleTextArea}
+								onChange={handleTextAreaChange}
 								autoFocus
 								onFocus={e =>
 									e.currentTarget.setSelectionRange(
@@ -166,7 +189,7 @@ const CommentContainer: React.FC<Props> = ({
 							<div className='btn-container'>
 								<ActionBtn
 									title={'UPDATE'}
-									onClick={() => handleUpdateComment()}
+									onClick={() => handleUpdateActionBtnClick()}
 								/>
 							</div>
 						</div>

@@ -17,6 +17,28 @@ const App: React.FC = () => {
 	const [showDeleteModal, setShowDeleteModal] = useState(false)
 	const [commentToDelete, setCommentToDelete] = useState(-1)
 
+	const date = new Date()
+
+	const getMonthNames = () => [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December',
+	]
+
+	const getNow = () =>
+		`${date.getDate()} ${
+			getMonthNames()[date.getMonth()]
+		} ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+
 	useEffect(() => {
 		fetch('../data/data.json')
 			.then(res => res.json())
@@ -131,7 +153,7 @@ const App: React.FC = () => {
 				{
 					id: lastCommentId + 1,
 					content: content,
-					createdAt: '1 month ago',
+					createdAt: getNow(),
 					score: 0,
 					user: currentUser,
 					replies: [],
@@ -158,7 +180,7 @@ const App: React.FC = () => {
 						comment.replies?.push({
 							id: lastCommentId + 1,
 							content,
-							createdAt: '1 month ago',
+							createdAt: getNow(),
 							replyingTo,
 							score: 0,
 							user: currentUser,

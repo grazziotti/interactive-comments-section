@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { addCommentType } from '../../types/addCommentType'
 import { userType } from '../../types/userType'
+import { isEmptyOrSpaces } from '../../utils/checkEmptyString'
 import ActionBtn from '../ActionBtn'
 import TextArea from '../TextArea'
 
@@ -34,10 +35,6 @@ const AddComment: React.FC<Props> = ({
 			setComment(`@${replyingTo}, `)
 		}
 	}, [])
-
-	const isEmptyOrSpaces = (str: string) => {
-		return str === null || str.match(/^ *$/) !== null
-	}
 
 	const addComment = () => {
 		if (!isEmptyOrSpaces(comment.trim())) {
