@@ -72,10 +72,12 @@ const AddComment: React.FC<Props> = ({
 
 	return (
 		<Container className='addComment'>
-			<img
-				src={currentUser.image.png}
-				alt={`${currentUser.username} profile pic`}
-			/>
+			<div className='profile-avatar'>
+				<img
+					src={currentUser.image.png}
+					alt={`${currentUser.username} profile pic`}
+				/>
+			</div>
 			<TextArea
 				placeholder='Add a comment...'
 				value={comment}
@@ -93,6 +95,20 @@ const AddComment: React.FC<Props> = ({
 					title={type.toUpperCase()}
 					onClick={type == 'send' ? addComment : replyComment}
 				/>
+			</div>
+			<div className='addComment-footer'>
+				<div className='profile-avatar'>
+					<img
+						src={currentUser.image.png}
+						alt={`${currentUser.username} profile pic`}
+					/>
+				</div>
+				<div className='btn-container'>
+					<ActionBtn
+						title={type.toUpperCase()}
+						onClick={type == 'send' ? addComment : replyComment}
+					/>
+				</div>
 			</div>
 		</Container>
 	)

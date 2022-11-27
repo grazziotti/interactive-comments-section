@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colors, font } from '../../styles/variables'
+import { colors, devices, font } from '../../styles/variables'
 
 export const Container = styled.div`
 	.comment-area {
@@ -16,17 +16,6 @@ export const Container = styled.div`
 			width: 100%;
 			max-width: 62.1rem;
 			gap: 1rem;
-
-			.comment-body--edit {
-				display: flex;
-				flex-direction: column;
-				gap: 1rem;
-
-				.btn-container {
-					display: flex;
-					justify-content: end;
-				}
-			}
 
 			.comment-header {
 				display: flex;
@@ -59,13 +48,24 @@ export const Container = styled.div`
 					background-color: ${colors.moderateBlue};
 					border-radius: 0.3rem;
 				}
+			}
 
-				.comment-btn-area {
+			.comment-btn-area {
+				display: flex;
+				align-items: center;
+				margin-left: auto;
+
+				gap: 0 2.2rem;
+			}
+
+			.comment-body--edit {
+				display: flex;
+				flex-direction: column;
+				gap: 1rem;
+
+				.btn-container {
 					display: flex;
-					align-items: center;
-					margin-left: auto;
-
-					gap: 0 2.2rem;
+					justify-content: end;
 				}
 			}
 
@@ -81,12 +81,40 @@ export const Container = styled.div`
 					color: ${colors.moderateBlue};
 				}
 			}
+
+			.comment-footer {
+				display: none;
+			}
 		}
 	}
 
 	.comment-area.reply {
 		.comment-block {
 			max-width: 52.7rem;
+		}
+	}
+
+	@media (max-width: ${devices.mobile}) {
+		.comment-area {
+			padding: 1.6rem;
+
+			.comment-score {
+				display: none;
+			}
+
+			.comment-block {
+				.comment-header {
+					.comment-btn-area {
+						display: none;
+					}
+				}
+
+				.comment-footer {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+				}
+			}
 		}
 	}
 `

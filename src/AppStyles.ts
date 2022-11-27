@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colors } from './styles/variables'
+import { colors, devices } from './styles/variables'
 
 export const Container = styled.main`
 	width: 100%;
@@ -13,6 +13,12 @@ export const Container = styled.main`
 
 		.comment-area {
 			width: 100%;
+		}
+	}
+
+	@media (max-width: ${devices.mobile}) {
+		.app-container {
+			padding: 1.6rem;
 		}
 	}
 `

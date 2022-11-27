@@ -23,3 +23,7 @@ export const font = {
 		bold: 700,
 	},
 }
+
+export const devices = {
+	mobile: '750px',
+}

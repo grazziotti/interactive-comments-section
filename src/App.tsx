@@ -135,10 +135,10 @@ const App: React.FC = () => {
 	const handleAddComment: addCommentType = (...args) => {
 		const [content, userToReplyId, replyingTo] = args
 
-		if (!userToReplyId && !replyingTo) {
-			addComment(content)
-		} else {
+		if (userToReplyId && replyingTo) {
 			replyComment(content, userToReplyId, replyingTo)
+		} else {
+			addComment(content)
 		}
 	}
 

@@ -121,13 +121,15 @@ const CommentContainer: React.FC<Props> = ({
 	return (
 		<Container>
 			<div className={`comment-area ${replying ? 'reply' : ''} `}>
-				<CommentScore
-					score={commentData.score}
-					onUpdateScore={onUpdateScore}
-					commentData={commentData}
-					currentUser={currentUser}
-					replying={replying ? true : false}
-				/>
+				<div className='comment-score'>
+					<CommentScore
+						score={commentData.score}
+						onUpdateScore={onUpdateScore}
+						commentData={commentData}
+						currentUser={currentUser}
+						replying={replying ? true : false}
+					/>
+				</div>
 				<div className='comment-block'>
 					<div className='comment-header'>
 						<img
@@ -194,6 +196,37 @@ const CommentContainer: React.FC<Props> = ({
 							</div>
 						</div>
 					)}
+					<div className='comment-footer'>
+						<CommentScore
+							score={commentData.score}
+							onUpdateScore={onUpdateScore}
+							commentData={commentData}
+							currentUser={currentUser}
+							replying={replying ? true : false}
+						/>
+						<div className='comment-btn-area'>
+							{commentData.user.username ==
+							currentUser.username ? (
+								<>
+									<CommentBtn
+										type='delete'
+										onClick={handleDeleteBtnClick}
+									/>
+									<CommentBtn
+										type='update'
+										onClick={() => setShowEditComment(true)}
+									/>
+								</>
+							) : (
+								<>
+									<CommentBtn
+										type='reply'
+										onClick={() => setShowAddComment(true)}
+									/>
+								</>
+							)}
+						</div>
+					</div>
 				</div>
 			</div>
 			{showAddComment && (

@@ -7,8 +7,6 @@ const commentPostedTime = (timeInMileSec: number) => {
 	const months = timeInMileSec / (1000 * 60 * 60 * 24 * 31)
 	const years = timeInMileSec / (1000 * 60 * 60 * 24 * 12)
 
-	console.log(timeInMileSec, sec)
-
 	if (sec < 60) {
 		return 'seconds'
 	} else if (min < 60) {

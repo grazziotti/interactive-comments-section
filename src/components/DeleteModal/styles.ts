@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colors, font } from '../../styles/variables'
+import { colors, devices, font } from '../../styles/variables'
 
 export const Container = styled.div`
 	display: flex;
@@ -10,6 +10,7 @@ export const Container = styled.div`
 	top: 0;
 	width: 100%;
 	height: 100vh;
+	padding: 1.6rem;
 	background-color: rgba(0, 0, 0, 0.3);
 
 	.modal {
@@ -58,6 +59,23 @@ export const Container = styled.div`
 
 			.delete {
 				background-color: ${colors.softRed};
+			}
+		}
+	}
+
+	@media (max-width: ${devices.mobile}) {
+		.modal {
+			padding: 1.6rem;
+
+			.header {
+				font-size: 2rem;
+			}
+
+			.footer {
+				button {
+					padding: 1.5rem 2rem;
+					min-width: auto;
+				}
 			}
 		}
 	}

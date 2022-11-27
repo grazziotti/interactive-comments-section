@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colors } from '../../styles/variables'
+import { colors, devices } from '../../styles/variables'
 
 export const Container = styled.div`
 	display: flex;
@@ -13,5 +13,35 @@ export const Container = styled.div`
 	img {
 		width: 3.2rem;
 		height: 3.2rem;
+	}
+
+	.addComment-footer {
+		display: none;
+	}
+
+	@media (max-width: ${devices.mobile}) {
+		flex-direction: column;
+
+		.profile-avatar {
+			display: none;
+		}
+
+		.btn-container {
+			display: none;
+		}
+
+		.addComment-footer {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+
+			.profile-avatar {
+				display: flex;
+			}
+
+			.btn-container {
+				display: flex;
+			}
+		}
 	}
 `

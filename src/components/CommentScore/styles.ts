@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colors, font } from '../../styles/variables'
+import { colors, devices, font } from '../../styles/variables'
 
 export const Container = styled.div`
 	display: inline-flex;
@@ -39,5 +39,10 @@ export const Container = styled.div`
 		font-size: ${font.size.body};
 		font-weight: ${font.weight.medium};
 		color: ${colors.moderateBlue};
+	}
+
+	@media (max-width: ${devices.mobile}) {
+		flex-direction: row;
+		gap: 1.6rem;
 	}
 `
