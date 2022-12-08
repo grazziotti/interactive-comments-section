@@ -9,6 +9,9 @@ export const Container = styled.div`
 		margin-top: 2rem;
 		border-radius: 1rem;
 		background-color: ${colors.white};
+		opacity: 0;
+		transform: translateY(-16px);
+		transition: all 0.3s;
 
 		.comment-block {
 			display: flex;
@@ -86,6 +89,11 @@ export const Container = styled.div`
 				display: none;
 			}
 		}
+	}
+
+	.comment-area.show {
+		opacity: 1;
+		transform: translateY(0);
 	}
 
 	.comment-area.reply {

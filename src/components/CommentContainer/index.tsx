@@ -37,6 +37,7 @@ const CommentContainer: React.FC<Props> = ({
 	onUpdate,
 	onOpenDeleteModal,
 }: Props) => {
+	const [showComment, setShowComment] = useState(false)
 	const [showAddComment, setShowAddComment] = useState(false)
 	const [showEditComment, setShowEditComment] = useState(false)
 	const [content, setContent] = useState(commentData.content)
@@ -103,10 +104,14 @@ const CommentContainer: React.FC<Props> = ({
 	}
 
 	useEffect(() => {
-		const timeout = setTimeout(() => {
-			const differenceInTime = today.getTime() - createdAt.getTime()
-			setTime(commentPostedTime(differenceInTime))
-		}, 1000)
+		const timeout = setTimeout(
+			() => {
+				const differenceInTime = today.getTime() - createdAt.getTime()
+				setTime(commentPostedTime(differenceInTime))
+				setShowComment(true)
+			},
+			commentData.replyingTo ? 600 : 200,
+		)
 
 		return () => clearTimeout(timeout)
 	}, [])
@@ -120,7 +125,11 @@ const CommentContainer: React.FC<Props> = ({
 
 	return (
 		<Container>
-			<div className={`comment-area ${replying ? 'reply' : ''} `}>
+			<div
+				className={`comment-area ${replying ? 'reply' : ''} ${
+					showComment ? 'show' : ''
+				} `}
+			>
 				<div className='comment-score'>
 					<CommentScore
 						score={commentData.score}

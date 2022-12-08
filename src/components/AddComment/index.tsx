@@ -25,6 +25,7 @@ const AddComment: React.FC<Props> = ({
 	onDone,
 }: Props) => {
 	const [comment, setComment] = useState('')
+	const [showComponent, setShowComponent] = useState(false)
 
 	const handleTextArea = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setComment(event.target.value)
@@ -34,6 +35,12 @@ const AddComment: React.FC<Props> = ({
 		if (type === 'reply') {
 			setComment(`@${replyingTo}, `)
 		}
+
+		const timeout = setTimeout(() => {
+			setShowComponent(true)
+		}, 200)
+
+		return () => clearTimeout(timeout)
 	}, [])
 
 	const addComment = () => {
@@ -72,42 +79,44 @@ const AddComment: React.FC<Props> = ({
 
 	return (
 		<Container className='addComment'>
-			<div className='profile-avatar'>
-				<img
-					src={currentUser.image.png}
-					alt={`${currentUser.username} profile pic`}
-				/>
-			</div>
-			<TextArea
-				placeholder='Add a comment...'
-				value={comment}
-				onChange={handleTextArea}
-				autoFocus={type === 'reply'}
-				onFocus={e =>
-					e.currentTarget.setSelectionRange(
-						e.currentTarget.value.length,
-						e.currentTarget.value.length,
-					)
-				}
-			/>
-			<div className='btn-container'>
-				<ActionBtn
-					title={type.toUpperCase()}
-					onClick={type == 'send' ? addComment : replyComment}
-				/>
-			</div>
-			<div className='addComment-footer'>
+			<div className={`addComment-area ${showComponent ? 'show' : ''}`}>
 				<div className='profile-avatar'>
 					<img
 						src={currentUser.image.png}
 						alt={`${currentUser.username} profile pic`}
 					/>
 				</div>
+				<TextArea
+					placeholder='Add a comment...'
+					value={comment}
+					onChange={handleTextArea}
+					autoFocus={type === 'reply'}
+					onFocus={e =>
+						e.currentTarget.setSelectionRange(
+							e.currentTarget.value.length,
+							e.currentTarget.value.length,
+						)
+					}
+				/>
 				<div className='btn-container'>
 					<ActionBtn
 						title={type.toUpperCase()}
 						onClick={type == 'send' ? addComment : replyComment}
 					/>
+				</div>
+				<div className='addComment-footer'>
+					<div className='profile-avatar'>
+						<img
+							src={currentUser.image.png}
+							alt={`${currentUser.username} profile pic`}
+						/>
+					</div>
+					<div className='btn-container'>
+						<ActionBtn
+							title={type.toUpperCase()}
+							onClick={type == 'send' ? addComment : replyComment}
+						/>
+					</div>
 				</div>
 			</div>
 		</Container>
