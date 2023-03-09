@@ -46,7 +46,7 @@ const CommentScore: React.FC<Props> = ({
 			>
 				<IconPlus />
 			</button>
-			<p className='score' aria-label={`likes: ${score}`} tabIndex={0}>
+			<p className='score' tabIndex={0}>
 				{score}
 			</p>
 			<button
