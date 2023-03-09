@@ -52,7 +52,7 @@ const CommentContainer: React.FC<Props> = ({
 		setContent(event.target.value)
 	}
 
-	const handleUpdateActionBtnClick = () => {
+	const handleEditActionBtnClick = () => {
 		if (commentData.user.username === currentUser.username) {
 			if (!isEmptyOrSpaces(content)) {
 				if (replying) {
@@ -144,14 +144,17 @@ const CommentContainer: React.FC<Props> = ({
 						<img
 							src={commentData.user.image.png}
 							alt={`${commentData.user.username} profile pic`}
+							tabIndex={0}
 						/>
-						<div className='username'>
+						<div className='username' tabIndex={0}>
 							{commentData.user.username}
 						</div>
 						{commentData.user.username === currentUser.username && (
-							<span className='you-tag'>you</span>
+							<span className='you-tag' tabIndex={0}>
+								you
+							</span>
 						)}
-						<span className='comment-posted-time'>
+						<span className='comment-posted-time' tabIndex={0}>
 							{time + ' ago'}
 						</span>
 						<div className='comment-btn-area'>
@@ -163,7 +166,7 @@ const CommentContainer: React.FC<Props> = ({
 										onClick={handleDeleteBtnClick}
 									/>
 									<CommentBtn
-										type='update'
+										type='edit'
 										onClick={() => setShowEditComment(true)}
 									/>
 								</>
@@ -178,7 +181,7 @@ const CommentContainer: React.FC<Props> = ({
 						</div>
 					</div>
 					{!showEditComment && (
-						<p className='comment-body'>
+						<p className='comment-body' tabIndex={0}>
 							{replying && <span>@{commentData.replyingTo}</span>}
 							{content}
 						</p>
@@ -200,7 +203,7 @@ const CommentContainer: React.FC<Props> = ({
 							<div className='btn-container'>
 								<ActionBtn
 									title={'UPDATE'}
-									onClick={() => handleUpdateActionBtnClick()}
+									onClick={() => handleEditActionBtnClick()}
 								/>
 							</div>
 						</div>
@@ -222,7 +225,7 @@ const CommentContainer: React.FC<Props> = ({
 										onClick={handleDeleteBtnClick}
 									/>
 									<CommentBtn
-										type='update'
+										type='edit'
 										onClick={() => setShowEditComment(true)}
 									/>
 								</>

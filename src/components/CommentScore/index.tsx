@@ -41,12 +41,19 @@ const CommentScore: React.FC<Props> = ({
 		<Container>
 			<button
 				className={`btn-plus ${commentData.voted ? 'voted' : ''}`}
+				aria-label='plus button'
 				onClick={upVote}
 			>
 				<IconPlus />
 			</button>
-			<div className='score'>{score}</div>
-			<button className='btn-minus' onClick={downVote}>
+			<p className='score' aria-label={`likes: ${score}`} tabIndex={0}>
+				{score}
+			</p>
+			<button
+				className='btn-minus'
+				onClick={downVote}
+				aria-label='minus button'
+			>
 				<IconMinus />
 			</button>
 		</Container>

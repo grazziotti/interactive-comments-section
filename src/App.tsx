@@ -161,7 +161,7 @@ const App: React.FC = () => {
 					replies: [],
 				},
 			]
-			console.log(getNow())
+
 			setComments(newComments)
 		}
 	}

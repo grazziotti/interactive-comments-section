@@ -9,7 +9,7 @@ type SimpleSpread<L, R> = R & Pick<L, Exclude<keyof L, keyof R>>
 import { Container } from './styles'
 
 interface PropsExtra {
-	type: 'reply' | 'update' | 'delete'
+	type: 'reply' | 'edit' | 'delete'
 }
 
 type Props = SimpleSpread<
@@ -26,7 +26,7 @@ const CommentBtn: React.FC<Props> = ({ type, ...props }: Props) => {
 					Reply
 				</span>
 			)}
-			{type === 'update' && (
+			{type === 'edit' && (
 				<span className='edit'>
 					<IconEdit />
 					Edit

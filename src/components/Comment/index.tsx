@@ -8,7 +8,7 @@ import CommentContainer from '../CommentContainer'
 
 import { Container } from './styles'
 
-interface Props {
+interface Props extends React.HTMLProps<HTMLDivElement> {
 	commentData: commentType
 	currentUser: userType
 	onUpdateScore: updateScoreType
