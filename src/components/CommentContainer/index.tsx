@@ -41,58 +41,61 @@ const CommentContainer: React.FC<Props> = ({
 	const [showAddComment, setShowAddComment] = useState(false)
 	const [showEditComment, setShowEditComment] = useState(false)
 	const [content, setContent] = useState(commentData.content)
+	const [editedContent, setEditedContent] = useState('')
 
 	const [time, setTime] = useState('')
 	const createdAt = new Date(commentData.createdAt)
 	const today = new Date()
 
-	const handleTextAreaChange = (
+	const handleEditTextAreaChange = (
 		event: React.ChangeEvent<HTMLTextAreaElement>,
 	) => {
-		setContent(event.target.value)
+		setEditedContent(event.target.value)
 	}
 
 	const handleEditActionBtnClick = () => {
 		if (commentData.user.username === currentUser.username) {
-			if (!isEmptyOrSpaces(content)) {
+			if (!isEmptyOrSpaces(editedContent)) {
 				if (replying) {
 					const hasUsername =
-						content.slice(
+						editedContent.slice(
 							0,
 							`${commentData.replyingTo}`.length + 3,
 						) === `@${commentData.replyingTo}, ` ||
-						content.slice(
+						editedContent.slice(
 							0,
 							`${commentData.replyingTo}`.length + 2,
 						) === `@${commentData.replyingTo},` ||
-						content.slice(
+						editedContent.slice(
 							0,
 							`${commentData.replyingTo}`.length + 2,
 						) === `@${commentData.replyingTo} ` ||
-						content.slice(
+						editedContent.slice(
 							0,
 							`${commentData.replyingTo}`.length + 1,
 						) === `@${commentData.replyingTo}`
 
 					if (hasUsername) {
-						const newContent = content.substring(
-							content.indexOf(`@${commentData.replyingTo},`) +
-								`@${commentData.replyingTo},`.length,
+						const newContent = editedContent.substring(
+							editedContent.indexOf(
+								`@${commentData.replyingTo},`,
+							) + `@${commentData.replyingTo},`.length,
 						)
 
 						if (!isEmptyOrSpaces(newContent.trim())) {
-							setContent(newContent)
-							onUpdate(newContent, commentData.id, replying)
-							setShowEditComment(false)
+							setContent(newContent.trim())
+							onUpdate(newContent, commentData.id, true)
 						}
 					} else {
-						onUpdate(content, commentData.id, replying)
-						setShowEditComment(false)
+						setContent(editedContent.trim())
+						onUpdate(editedContent, commentData.id, true)
 					}
 				} else {
-					onUpdate(content, commentData.id, false)
-					setShowEditComment(false)
+					setContent(editedContent.trim())
+					onUpdate(editedContent, commentData.id, false)
 				}
+
+				setShowEditComment(false)
 			}
 		}
 	}
@@ -117,9 +120,14 @@ const CommentContainer: React.FC<Props> = ({
 	}, [])
 
 	useEffect(() => {
-		if (showEditComment && replying) {
-			const newContent = `@${commentData.replyingTo},${content}`
-			setContent(newContent)
+		if (showEditComment) {
+			if (replying) {
+				const newContent = `@${commentData.replyingTo}, ${content}`
+
+				setEditedContent(newContent.replace(/ +(?= )/g, ''))
+			} else {
+				setEditedContent(content.replace(/ +(?= )/g, ''))
+			}
 		}
 	}, [showEditComment])
 
@@ -167,14 +175,18 @@ const CommentContainer: React.FC<Props> = ({
 									/>
 									<CommentBtn
 										type='edit'
-										onClick={() => setShowEditComment(true)}
+										onClick={() =>
+											setShowEditComment(!showEditComment)
+										}
 									/>
 								</>
 							) : (
 								<>
 									<CommentBtn
 										type='reply'
-										onClick={() => setShowAddComment(true)}
+										onClick={() =>
+											setShowAddComment(!showAddComment)
+										}
 									/>
 								</>
 							)}
@@ -190,8 +202,8 @@ const CommentContainer: React.FC<Props> = ({
 					{showEditComment && (
 						<div className='comment-body--edit'>
 							<TextArea
-								value={content}
-								onChange={handleTextAreaChange}
+								value={editedContent}
+								onChange={handleEditTextAreaChange}
 								autoFocus
 								onFocus={e =>
 									e.currentTarget.setSelectionRange(
@@ -203,7 +215,7 @@ const CommentContainer: React.FC<Props> = ({
 							<div className='btn-container'>
 								<ActionBtn
 									title={'UPDATE'}
-									onClick={() => handleEditActionBtnClick()}
+									onClick={handleEditActionBtnClick}
 								/>
 							</div>
 						</div>
@@ -226,14 +238,18 @@ const CommentContainer: React.FC<Props> = ({
 									/>
 									<CommentBtn
 										type='edit'
-										onClick={() => setShowEditComment(true)}
+										onClick={() =>
+											setShowEditComment(!showEditComment)
+										}
 									/>
 								</>
 							) : (
 								<>
 									<CommentBtn
 										type='reply'
-										onClick={() => setShowAddComment(true)}
+										onClick={() =>
+											setShowAddComment(!showAddComment)
+										}
 									/>
 								</>
 							)}
