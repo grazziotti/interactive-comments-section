@@ -289,7 +289,7 @@ const App: React.FC = () => {
 			<div className='app-container'>
 				{comments && currentUser && (
 					<>
-						<div className='comment-area'>
+						<ul className='comment-area'>
 							{comments.map(commentData => (
 								<Comment
 									key={commentData.id}
@@ -301,7 +301,7 @@ const App: React.FC = () => {
 									onOpenDeleteModal={openDeleteModal}
 								/>
 							))}
-						</div>
+						</ul>
 						<AddComment
 							currentUser={currentUser}
 							onAddComment={handleAddComment}

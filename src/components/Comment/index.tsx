@@ -36,21 +36,22 @@ const Comment: React.FC<Props> = ({
 				onOpenDeleteModal={onOpenDeleteModal}
 				userToReplyId={commentData.id}
 			/>
-			<div className='comment-replies'>
+			<ul className='comment-replies'>
 				{commentData.replies?.map(replyData => (
-					<CommentContainer
-						commentData={replyData}
-						currentUser={currentUser}
-						onUpdateScore={onUpdateScore}
-						onReply={onReply}
-						onUpdate={onUpdate}
-						onOpenDeleteModal={onOpenDeleteModal}
-						key={replyData.id}
-						replying
-						userToReplyId={commentData.id}
-					/>
+					<li key={replyData.id}>
+						<CommentContainer
+							commentData={replyData}
+							currentUser={currentUser}
+							onUpdateScore={onUpdateScore}
+							onReply={onReply}
+							onUpdate={onUpdate}
+							onOpenDeleteModal={onOpenDeleteModal}
+							replying
+							userToReplyId={commentData.id}
+						/>
+					</li>
 				))}
-			</div>
+			</ul>
 		</Container>
 	)
 }

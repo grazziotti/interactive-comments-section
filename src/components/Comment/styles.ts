@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { colors, devices } from '../../styles/variables'
 
-export const Container = styled.div`
+export const Container = styled.li`
 	.comment-replies {
 		padding-left: 4.6rem;
 		margin-left: 4.6rem;
