@@ -5,7 +5,7 @@ import { CurrentUserReducer } from '../reducers/CurrentUserReducer'
 import { reducerActionType } from '../types/reducerActionType'
 import { userType } from '../types/userType'
 
-type initialStateType = {
+export type initialStateType = {
 	currentUser: userType
 	comments: CommentType[]
 }
@@ -43,10 +43,24 @@ export const ContextProvider = ({ children }: React.PropsWithChildren) => {
 		fetch('../data/data.json')
 			.then(res => res.json())
 			.then(data => {
-				dispatch({
-					type: ContextActions.setComments,
-					payload: data.comments,
-				})
+				const localStorageComments = localStorage.getItem('comments')
+
+				if (localStorageComments) {
+					dispatch({
+						type: ContextActions.setComments,
+						payload: JSON.parse(localStorageComments),
+					})
+				} else {
+					dispatch({
+						type: ContextActions.setComments,
+						payload: data.comments,
+					})
+					localStorage.setItem(
+						'comments',
+						JSON.stringify(data.comments),
+					)
+				}
+
 				dispatch({
 					type: ContextActions.setCurrentUser,
 					payload: data.currentUser,

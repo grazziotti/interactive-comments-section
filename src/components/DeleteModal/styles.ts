@@ -11,6 +11,7 @@ export const Container = styled.div`
 	width: 100%;
 	height: 100vh;
 	padding: 1.6rem;
+	z-index: 99;
 	background-color: rgba(0, 0, 0, 0.3);
 
 	.modal {

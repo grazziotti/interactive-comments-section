@@ -9,7 +9,6 @@ export const CurrentUserReducer = (
 	switch (action.type) {
 		case ContextActions.setCurrentUser:
 			return action.payload
-			break
 	}
 	return state
 }

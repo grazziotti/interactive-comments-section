@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { addCommentType } from '../../types/addCommentType'
+import React, { useContext, useEffect, useState } from 'react'
+import { Context } from '../../context/Context'
+import { ContextActions } from '../../enums/ContextActions'
 import { userType } from '../../types/userType'
 import { isEmptyOrSpaces } from '../../utils/checkEmptyString'
+import { getCurrentDate } from '../../utils/getCurrentDate'
+import { getLastCommentId } from '../../utils/getLastCommentId'
 import ActionBtn from '../ActionBtn'
 import TextArea from '../TextArea'
 
@@ -10,24 +13,26 @@ import { Container } from './styles'
 interface Props {
 	currentUser: userType
 	type: 'send' | 'reply'
-	onAddComment: addCommentType
-	userToReplyId?: number
+	commentToReplyId?: number
 	replyingTo?: string
 	onDone?: () => void
 }
 
 const AddComment: React.FC<Props> = ({
 	currentUser,
-	onAddComment,
 	type,
-	userToReplyId,
+	commentToReplyId,
 	replyingTo,
 	onDone,
 }: Props) => {
 	const [comment, setComment] = useState('')
 	const [showComponent, setShowComponent] = useState(false)
 
-	const handleTextArea = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+	const { state, dispatch } = useContext(Context)
+
+	const handleTextAreaChange = (
+		event: React.ChangeEvent<HTMLTextAreaElement>,
+	) => {
 		setComment(event.target.value)
 	}
 
@@ -43,37 +48,66 @@ const AddComment: React.FC<Props> = ({
 		return () => clearTimeout(timeout)
 	}, [])
 
-	const addComment = () => {
-		if (!isEmptyOrSpaces(comment.trim())) {
-			onAddComment(comment.trim())
-			setComment('')
+	const filterReply = (comment: string) => {
+		if (
+			comment.slice(0, `${replyingTo}`.length + 2) === `@${replyingTo},`
+		) {
+			return comment.substring(
+				comment.indexOf(`@${replyingTo},`) + `@${replyingTo},`.length,
+			)
 		}
+
+		return comment
 	}
 
-	const replyComment = () => {
-		if (userToReplyId && replyingTo) {
-			if (!isEmptyOrSpaces(comment.trim())) {
-				if (
-					comment.slice(0, `${replyingTo}`.length + 2) ===
-					`@${replyingTo},`
-				) {
-					const newComment = comment.substring(
-						comment.indexOf(`@${replyingTo},`) +
-							`@${replyingTo},`.length,
-					)
+	const handleAddComment = () => {
+		const lastCommentId = getLastCommentId(state.comments)
 
-					if (!isEmptyOrSpaces(newComment.trim()))
-						onAddComment(
-							newComment.trim(),
-							userToReplyId,
-							replyingTo,
-						)
-				} else {
-					onAddComment(comment.trim(), userToReplyId, replyingTo)
-				}
-			}
+		if (isEmptyOrSpaces(comment.trim())) {
+			return
 		}
 
+		if (!lastCommentId) {
+			return
+		}
+
+		dispatch({
+			type: ContextActions.addComment,
+			payload: {
+				id: lastCommentId + 1,
+				content: comment.trim(),
+				createdAt: getCurrentDate(),
+				score: 0,
+				user: currentUser,
+				replies: [],
+			},
+		})
+
+		setComment('')
+	}
+
+	const handleAddReply = () => {
+		const lastCommentId = getLastCommentId(state.comments)
+		const filteredReplyComment = filterReply(comment)
+
+		if (isEmptyOrSpaces(filteredReplyComment.trim())) return
+
+		if (!lastCommentId) return
+
+		dispatch({
+			type: ContextActions.addReply,
+			payload: {
+				id: lastCommentId + 1,
+				content: filteredReplyComment.trim(),
+				createdAt: getCurrentDate(),
+				score: 0,
+				user: currentUser,
+				commentToReplyId,
+				replyingTo,
+			},
+		})
+
+		setComment('')
 		if (onDone) onDone()
 	}
 
@@ -89,7 +123,7 @@ const AddComment: React.FC<Props> = ({
 				<TextArea
 					placeholder='Add a comment...'
 					value={comment}
-					onChange={handleTextArea}
+					onChange={handleTextAreaChange}
 					autoFocus={type === 'reply'}
 					onFocus={e =>
 						e.currentTarget.setSelectionRange(
@@ -101,7 +135,9 @@ const AddComment: React.FC<Props> = ({
 				<div className='btn-container'>
 					<ActionBtn
 						title={type.toUpperCase()}
-						onClick={type == 'send' ? addComment : replyComment}
+						onClick={
+							type == 'send' ? handleAddComment : handleAddReply
+						}
 					/>
 				</div>
 				<div className='addComment-footer'>
@@ -114,7 +150,11 @@ const AddComment: React.FC<Props> = ({
 					<div className='btn-container'>
 						<ActionBtn
 							title={type.toUpperCase()}
-							onClick={type == 'send' ? addComment : replyComment}
+							onClick={
+								type == 'send'
+									? handleAddComment
+									: handleAddReply
+							}
 						/>
 					</div>
 				</div>

@@ -11,7 +11,7 @@ export const Container = styled.main`
 		padding: 6.4rem 2.4rem;
 		margin: auto;
 
-		.comment-area {
+		.comment-list {
 			width: 100%;
 		}
 	}
