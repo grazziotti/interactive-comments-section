@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Context } from '../../context/Context'
 import { ContextActions } from '../../enums/ContextActions'
 
@@ -38,6 +38,8 @@ const CommentContainer: React.FC<Props> = ({
 	const [showDeleteModal, setShowDeleteModal] = useState(false)
 
 	const { dispatch } = useContext(Context)
+
+	const nextFocusElementRef = useRef<HTMLElement | null>(null)
 
 	const [time, setTime] = useState('')
 	const createdAt = new Date(commentData.createdAt)
@@ -99,7 +101,6 @@ const CommentContainer: React.FC<Props> = ({
 
 						if (!isEmptyOrSpaces(newContent.trim())) {
 							setContent(newContent.trim())
-
 							updateReply(newContent)
 						}
 					} else {
@@ -145,10 +146,26 @@ const CommentContainer: React.FC<Props> = ({
 
 	const openDeleteModal = () => {
 		setShowDeleteModal(true)
+
+		if (document.activeElement) {
+			nextFocusElementRef.current = document.activeElement as HTMLElement
+		}
 	}
 
-	const closeDeleteModal = () => {
+	const handleReplyBtnClick = () => {
+		setShowAddReply(!showAddReply)
+	}
+
+	const handleEditBtnClick = () => {
+		if (commentData.user.username === currentUser.username) {
+			setShowEditComment(!showEditComment)
+		}
+	}
+
+	const closeDeleteModal = (deleted: boolean) => {
 		setShowDeleteModal(false)
+
+		if (!deleted) nextFocusElementRef.current?.focus()
 	}
 
 	return (
@@ -191,21 +208,30 @@ const CommentContainer: React.FC<Props> = ({
 									<CommentBtn
 										type='delete'
 										onClick={handleDeleteBtnClick}
+										aria-haspopup='dialog'
+										aria-expanded={
+											showDeleteModal ? 'true' : 'false'
+										}
+										aria-controls='delete-modal'
+										aria-label='delete comment'
 									/>
 									<CommentBtn
 										type='edit'
-										onClick={() =>
-											setShowEditComment(!showEditComment)
-										}
+										onClick={handleEditBtnClick}
+										aria-label='edit comment'
 									/>
 								</>
 							) : (
 								<>
 									<CommentBtn
 										type='reply'
-										onClick={() =>
-											setShowAddReply(!showAddReply)
+										onClick={handleReplyBtnClick}
+										aria-haspopup='dialog'
+										aria-expanded={
+											showAddReply ? 'true' : 'false'
 										}
+										aria-controls='addComment'
+										aria-label='reply comment'
 									/>
 								</>
 							)}

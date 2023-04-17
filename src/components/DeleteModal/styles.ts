@@ -23,13 +23,13 @@ export const Container = styled.div`
 		border-radius: 1rem;
 		background-color: ${colors.white};
 
-		.header {
+		#header {
 			font-size: 2.4rem;
 			font-weight: ${font.weight.medium};
 			color: ${colors.darkBlue};
 		}
 
-		.body {
+		#body {
 			font-size: ${font.size.body};
 			line-height: 1.5;
 			color: ${colors.grayishBlue};

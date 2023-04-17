@@ -112,7 +112,11 @@ const AddComment: React.FC<Props> = ({
 	}
 
 	return (
-		<Container className='addComment'>
+		<Container
+			id='addComment'
+			role={type === 'reply' ? 'dialog' : undefined}
+			aria-modal={type === 'reply' ? 'true' : undefined}
+		>
 			<div className={`addComment-area ${showComponent ? 'show' : ''}`}>
 				<div className='profile-avatar'>
 					<img
@@ -123,6 +127,9 @@ const AddComment: React.FC<Props> = ({
 				<TextArea
 					placeholder='Add a comment...'
 					value={comment}
+					aria-label={
+						type === 'send' ? 'add a comment' : 'add a reply'
+					}
 					onChange={handleTextAreaChange}
 					autoFocus={type === 'reply'}
 					onFocus={e =>
