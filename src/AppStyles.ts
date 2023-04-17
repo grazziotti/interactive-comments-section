@@ -10,10 +10,6 @@ export const Container = styled.main`
 		max-width: 78.5rem;
 		padding: 6.4rem 2.4rem;
 		margin: auto;
-
-		.comment-list {
-			width: 100%;
-		}
 	}
 
 	@media (max-width: ${devices.mobile}) {
