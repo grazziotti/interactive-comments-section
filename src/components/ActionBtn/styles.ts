@@ -7,11 +7,15 @@ export const Container = styled.button`
 	font-size: ${font.size.body};
 	font-weight: ${font.weight.bold};
 	border-radius: 1rem;
-	background-color: ${colors.moderateBlue};
+	background-color: ${colors.lightGrayishBlue};
 	color: ${colors.white};
 	transition: all 0.3s;
 
-	&:hover {
+	&.active {
+		background-color: ${colors.moderateBlue};
+	}
+
+	&.active:hover {
 		background-color: ${colors.lightGrayishBlue};
 	}
 `

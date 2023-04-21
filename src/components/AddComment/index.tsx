@@ -27,6 +27,7 @@ const AddComment: React.FC<Props> = ({
 }: Props) => {
 	const [comment, setComment] = useState('')
 	const [showComponent, setShowComponent] = useState(false)
+	const [isCommentAllowed, setIsCommentAllowed] = useState(false)
 
 	const { state, dispatch } = useContext(Context)
 
@@ -35,6 +36,8 @@ const AddComment: React.FC<Props> = ({
 	) => {
 		setComment(event.target.value)
 	}
+
+	useEffect(() => checkCommentAllowed(), [comment])
 
 	useEffect(() => {
 		if (type === 'reply') {
@@ -47,6 +50,12 @@ const AddComment: React.FC<Props> = ({
 
 		return () => clearTimeout(timeout)
 	}, [])
+
+	const checkCommentAllowed = () => {
+		if (type === 'send') setIsCommentAllowed(!isEmptyOrSpaces(comment))
+		else if (type === 'reply')
+			setIsCommentAllowed(!isEmptyOrSpaces(filterReply(comment).trim()))
+	}
 
 	const filterReply = (comment: string) => {
 		if (
@@ -141,6 +150,7 @@ const AddComment: React.FC<Props> = ({
 				/>
 				<div className='btn-container'>
 					<ActionBtn
+						className={isCommentAllowed ? 'active' : ''}
 						title={type.toUpperCase()}
 						onClick={
 							type == 'send' ? handleAddComment : handleAddReply
@@ -156,6 +166,7 @@ const AddComment: React.FC<Props> = ({
 					</div>
 					<div className='btn-container'>
 						<ActionBtn
+							className={isCommentAllowed ? 'active' : ''}
 							title={type.toUpperCase()}
 							onClick={
 								type == 'send'

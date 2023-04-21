@@ -37,6 +37,8 @@ const Comment: React.FC<Props> = ({
 	const [editedContent, setEditedContent] = useState('')
 	const [showDeleteModal, setShowDeleteModal] = useState(false)
 
+	const [isUpdateAllowed, setIsUpdateAllowed] = useState(false)
+
 	const { dispatch } = useContext(Context)
 
 	const nextFocusElementRef = useRef<HTMLElement | null>(null)
@@ -67,8 +69,12 @@ const Comment: React.FC<Props> = ({
 			} else {
 				setEditedContent(content.replace(/ +(?= )/g, ''))
 			}
+		} else {
+			setEditedContent(content.replace(/ +(?= )/g, ''))
 		}
 	}, [showEditComment])
+
+	useEffect(() => checkUpdateAllowed(), [editedContent])
 
 	const handleEditTextAreaChange = (
 		event: React.ChangeEvent<HTMLTextAreaElement>,
@@ -76,12 +82,41 @@ const Comment: React.FC<Props> = ({
 		setEditedContent(event.target.value)
 	}
 
+	const checkUpdateAllowed = () => {
+		if (isEmptyOrSpaces(editedContent)) {
+			setIsUpdateAllowed(false)
+			return
+		}
+
+		if (commentData.replyingTo) {
+			if (checkMention(editedContent, commentData.replyingTo)) {
+				const newContent = editedContent.substring(
+					editedContent.indexOf(`@${commentData.replyingTo},`) +
+						`@${commentData.replyingTo},`.length,
+				)
+
+				if (isEmptyOrSpaces(newContent)) {
+					setIsUpdateAllowed(false)
+					return
+				}
+
+				setIsUpdateAllowed(newContent.trim() !== content.trim())
+			} else {
+				setIsUpdateAllowed(editedContent.trim() !== content.trim())
+			}
+		} else {
+			setIsUpdateAllowed(editedContent.trim() !== content.trim())
+		}
+	}
+
 	const checkMention = (comment: string, username: string): boolean => {
 		const regex = new RegExp(`@${username}\\b`, 'i')
 		return regex.test(comment)
 	}
 
-	const handleEditActionBtnClick = () => {
+	const handleUpdateBtnClick = () => {
+		if (!isUpdateAllowed) return
+
 		if (commentData.user.username === currentUser.username) {
 			if (!isEmptyOrSpaces(editedContent)) {
 				if (replying) {
@@ -257,8 +292,9 @@ const Comment: React.FC<Props> = ({
 							/>
 							<div className='btn-container'>
 								<ActionBtn
-									title={'UPDATE'}
-									onClick={handleEditActionBtnClick}
+									className={isUpdateAllowed ? 'active' : ''}
+									title='UPDATE'
+									onClick={handleUpdateBtnClick}
 								/>
 							</div>
 						</div>
