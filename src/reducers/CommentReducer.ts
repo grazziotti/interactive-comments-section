@@ -25,11 +25,11 @@ export const CommentReducer = (
 			return [...state, action.payload]
 		}
 		case ContextActions.updateComment: {
-			const { id, content } = action.payload
+			const { id, newContent } = action.payload
 
 			return state.map(comment => {
 				if (comment.id === id) {
-					return { ...comment, content }
+					return { ...comment, content: newContent }
 				}
 				return comment
 			})

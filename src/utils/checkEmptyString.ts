@@ -1,5 +1,5 @@
 const isEmptyOrSpaces = (str: string) => {
-	return str === null || str.match(/^ *$/) !== null
+	return str.trim() === null || str.trim().match(/^ *$/) !== null
 }
 
 export { isEmptyOrSpaces }

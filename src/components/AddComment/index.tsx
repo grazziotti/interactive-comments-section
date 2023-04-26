@@ -9,6 +9,7 @@ import ActionBtn from '../ActionBtn'
 import TextArea from '../TextArea'
 
 import { Container } from './styles'
+import { filterReply } from '../../utils/filterReply'
 
 interface Props {
 	currentUser: userType
@@ -52,39 +53,32 @@ const AddComment: React.FC<Props> = ({
 	}, [])
 
 	const checkCommentAllowed = () => {
-		if (type === 'send') setIsCommentAllowed(!isEmptyOrSpaces(comment))
-		else if (type === 'reply')
-			setIsCommentAllowed(!isEmptyOrSpaces(filterReply(comment).trim()))
-	}
+		if (type === 'send') {
+			setIsCommentAllowed(!isEmptyOrSpaces(comment.trim()))
+			return
+		} else if (type === 'reply') {
+			if (replyingTo) {
+				const filteredReply = filterReply(comment.trim(), replyingTo)
+				setIsCommentAllowed(!isEmptyOrSpaces(filteredReply.trim()))
+				return
+			}
 
-	const filterReply = (comment: string) => {
-		if (
-			comment.slice(0, `${replyingTo}`.length + 2) === `@${replyingTo},`
-		) {
-			return comment.substring(
-				comment.indexOf(`@${replyingTo},`) + `@${replyingTo},`.length,
-			)
+			return
 		}
-
-		return comment
 	}
 
 	const handleAddComment = () => {
+		if (!isCommentAllowed) return
+
 		const lastCommentId = getLastCommentId(state.comments)
 
-		if (isEmptyOrSpaces(comment.trim())) {
-			return
-		}
-
-		if (!lastCommentId) {
-			return
-		}
+		if (!lastCommentId) return
 
 		dispatch({
 			type: ContextActions.addComment,
 			payload: {
 				id: lastCommentId + 1,
-				content: comment.trim(),
+				content: comment,
 				createdAt: getCurrentDate(),
 				score: 0,
 				user: currentUser,
@@ -96,10 +90,11 @@ const AddComment: React.FC<Props> = ({
 	}
 
 	const handleAddReply = () => {
-		const lastCommentId = getLastCommentId(state.comments)
-		const filteredReplyComment = filterReply(comment)
+		if (!isCommentAllowed) return
+		if (!replyingTo) return
 
-		if (isEmptyOrSpaces(filteredReplyComment.trim())) return
+		const lastCommentId = getLastCommentId(state.comments)
+		const filteredReplyComment = filterReply(comment.trim(), replyingTo)
 
 		if (!lastCommentId) return
 
@@ -107,7 +102,7 @@ const AddComment: React.FC<Props> = ({
 			type: ContextActions.addReply,
 			payload: {
 				id: lastCommentId + 1,
-				content: filteredReplyComment.trim(),
+				content: filteredReplyComment,
 				createdAt: getCurrentDate(),
 				score: 0,
 				user: currentUser,

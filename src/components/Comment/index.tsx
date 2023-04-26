@@ -16,6 +16,7 @@ import CommentScore from '../CommentScore'
 import TextArea from '../TextArea'
 
 import { Container } from './styles'
+import { filterReply } from '../../utils/filterReply'
 
 interface Props {
 	commentData: commentType
@@ -36,7 +37,6 @@ const Comment: React.FC<Props> = ({
 	const [content, setContent] = useState(commentData.content)
 	const [editedContent, setEditedContent] = useState('')
 	const [showDeleteModal, setShowDeleteModal] = useState(false)
-
 	const [isUpdateAllowed, setIsUpdateAllowed] = useState(false)
 
 	const { dispatch } = useContext(Context)
@@ -63,9 +63,9 @@ const Comment: React.FC<Props> = ({
 	useEffect(() => {
 		if (showEditComment) {
 			if (replying) {
-				const newContent = `@${commentData.replyingTo}, ${content}`
+				const filteredReply = `@${commentData.replyingTo}, ${content}`
 
-				setEditedContent(newContent.replace(/ +(?= )/g, ''))
+				setEditedContent(filteredReply.replace(/ +(?= )/g, ''))
 			} else {
 				setEditedContent(content.replace(/ +(?= )/g, ''))
 			}
@@ -83,107 +83,78 @@ const Comment: React.FC<Props> = ({
 	}
 
 	const checkUpdateAllowed = () => {
-		if (isEmptyOrSpaces(editedContent)) {
-			setIsUpdateAllowed(false)
-			return
-		}
+		if (!isEmptyOrSpaces(editedContent)) {
+			if (replying) {
+				if (commentData.replyingTo) {
+					const filteredReply = filterReply(
+						editedContent.trim(),
+						commentData.replyingTo,
+					)
 
-		if (commentData.replyingTo) {
-			if (checkMention(editedContent, commentData.replyingTo)) {
-				const newContent = editedContent.substring(
-					editedContent.indexOf(`@${commentData.replyingTo},`) +
-						`@${commentData.replyingTo},`.length,
-				)
+					if (!isEmptyOrSpaces(filteredReply)) {
+						setIsUpdateAllowed(
+							filteredReply.trim() !== content.trim(),
+						)
+						return
+					}
 
-				if (isEmptyOrSpaces(newContent)) {
 					setIsUpdateAllowed(false)
 					return
 				}
 
-				setIsUpdateAllowed(newContent.trim() !== content.trim())
+				setIsUpdateAllowed(false)
+				return
 			} else {
 				setIsUpdateAllowed(editedContent.trim() !== content.trim())
+				return
 			}
-		} else {
-			setIsUpdateAllowed(editedContent.trim() !== content.trim())
 		}
+
+		setIsUpdateAllowed(false)
+		return
 	}
 
-	const checkMention = (comment: string, username: string): boolean => {
-		const regex = new RegExp(`@${username}\\b`, 'i')
-		return regex.test(comment)
-	}
-
-	const handleUpdateBtnClick = () => {
+	const updateComment = () => {
 		if (!isUpdateAllowed) return
 
-		if (commentData.user.username === currentUser.username) {
-			if (!isEmptyOrSpaces(editedContent)) {
-				if (replying) {
-					if (!commentData.replyingTo) return
-
-					const hasUsernameMention = checkMention(
-						editedContent,
-						commentData.replyingTo,
-					)
-
-					if (hasUsernameMention) {
-						const newContent = editedContent.substring(
-							editedContent.indexOf(
-								`@${commentData.replyingTo},`,
-							) + `@${commentData.replyingTo},`.length,
-						)
-
-						if (!isEmptyOrSpaces(newContent.trim())) {
-							setContent(newContent.trim())
-							updateReply(newContent)
-						}
-					} else {
-						setContent(editedContent.trim())
-						updateReply(editedContent)
-					}
-				} else {
-					setContent(editedContent.trim())
-					updateComment(editedContent)
-				}
-
-				setShowEditComment(false)
-			}
-		}
-	}
-
-	const updateComment = (content: string) => {
 		dispatch({
 			type: ContextActions.updateComment,
 			payload: {
 				id: commentData.id,
-				content,
+				newContent: editedContent.trim(),
 			},
 		})
+
+		setContent(editedContent.trim())
+		setShowEditComment(false)
 	}
 
-	const updateReply = (content: string) => {
+	const updateReply = () => {
+		if (!isUpdateAllowed) return
+
+		if (!commentData.replyingTo) return
+
+		const filteredComment = filterReply(
+			editedContent.trim(),
+			commentData.replyingTo,
+		)
+
 		dispatch({
 			type: ContextActions.updateReply,
 			payload: {
 				commentId: commentToReplyId,
 				replyId: commentData.id,
-				newContent: content,
+				newContent: filteredComment.trim(),
 			},
 		})
+
+		setContent(filteredComment.trim())
+		setShowEditComment(false)
 	}
 
 	const handleDeleteBtnClick = () => {
 		if (commentData.user.username === currentUser.username) {
 			openDeleteModal()
-		}
-	}
-
-	const openDeleteModal = () => {
-		setShowDeleteModal(true)
-
-		if (document.activeElement) {
-			nextFocusElementRef.current = document.activeElement as HTMLElement
 		}
 	}
 
@@ -193,7 +164,16 @@ const Comment: React.FC<Props> = ({
 
 	const handleEditBtnClick = () => {
 		if (commentData.user.username === currentUser.username) {
+			checkUpdateAllowed()
 			setShowEditComment(!showEditComment)
+		}
+	}
+
+	const openDeleteModal = () => {
+		setShowDeleteModal(true)
+
+		if (document.activeElement) {
+			nextFocusElementRef.current = document.activeElement as HTMLElement
 		}
 	}
 
@@ -294,7 +274,9 @@ const Comment: React.FC<Props> = ({
 								<ActionBtn
 									className={isUpdateAllowed ? 'active' : ''}
 									title='UPDATE'
-									onClick={handleUpdateBtnClick}
+									onClick={
+										replying ? updateReply : updateComment
+									}
 								/>
 							</div>
 						</div>
