@@ -13,13 +13,22 @@ export const Container = styled.div`
 	padding: 1.6rem;
 	z-index: 99;
 	background-color: rgba(0, 0, 0, 0.3);
+	opacity: 0;
+	transition: all 0.3s;
 
-	.modal {
+	&.show {
+		opacity: 1;
+	}
+
+	#delete-modal {
 		display: flex;
 		flex-direction: column;
 		max-width: 40rem;
 		gap: 1.6rem;
 		padding: 3.2rem;
+		opacity: 0;
+		transform: translateY(-16px);
+		transition: all 0.3s;
 		border-radius: 1rem;
 		background-color: ${colors.white};
 
@@ -64,8 +73,13 @@ export const Container = styled.div`
 		}
 	}
 
+	#delete-modal.show {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
 	@media (max-width: ${devices.mobile}) {
-		.modal {
+		#delete-modal {
 			padding: 1.6rem;
 
 			.header {

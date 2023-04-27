@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Context } from '../../context/Context'
 import { ContextActions } from '../../enums/ContextActions'
 
@@ -19,8 +19,18 @@ const DeleteModal: React.FC<Props> = ({
 }: Props) => {
 	const { dispatch } = useContext(Context)
 
+	const [showComponent, setShowComponent] = useState(false)
+
 	const button1Ref = useRef<HTMLButtonElement>(null)
 	const button2Ref = useRef<HTMLButtonElement>(null)
+
+	useEffect(() => {
+		const timeout = setTimeout(() => {
+			setShowComponent(true)
+		}, 10)
+
+		return () => clearTimeout(timeout)
+	}, [])
 
 	const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
 		if (event.key === 'Tab') {
@@ -36,6 +46,11 @@ const DeleteModal: React.FC<Props> = ({
 				}
 			}
 		}
+	}
+
+	const handleCancelBtnClick = () => {
+		setShowComponent(false)
+		setTimeout(() => onDone(false), 200)
 	}
 
 	const handleDeleteBtnClick = () => {
@@ -68,10 +83,10 @@ const DeleteModal: React.FC<Props> = ({
 	}
 
 	return (
-		<Container>
+		<Container className={`${showComponent ? 'show' : ''}`}>
 			<div
 				id='delete-modal'
-				className='modal'
+				className={`${showComponent ? 'show' : ''}`}
 				role='alertdialog'
 				aria-modal='true'
 				aria-labelledby='header'
@@ -86,7 +101,7 @@ const DeleteModal: React.FC<Props> = ({
 				<div className='footer'>
 					<button
 						className='cancel'
-						onClick={() => onDone(false)}
+						onClick={handleCancelBtnClick}
 						autoFocus
 						ref={button1Ref}
 					>
