@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { colors, devices } from '../styles/variables'
+import { colors, devices } from '../../styles/variables'
 
 export const Container = styled.ul`
 	width: 100%;

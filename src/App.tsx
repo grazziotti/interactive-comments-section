@@ -6,7 +6,7 @@ import { Context } from './context/Context'
 
 import { GlobalStyles } from './styles/global'
 import AddComment from './components/AddComment'
-import Comments from './Comments'
+import Comments from './components/Comments'
 
 const App: React.FC = () => {
 	const { state } = useContext(Context)

@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react'
 
 import { Container } from './styles'
-import { Context } from '../context/Context'
-import Comment from '../components/Comment'
+import { Context } from '../../context/Context'
+import Comment from '../Comment'
 
 const Comments: React.FC = () => {
 	const { state } = useContext(Context)
