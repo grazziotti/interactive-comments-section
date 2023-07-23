@@ -4,9 +4,12 @@
 
 ## 📄 Descrição
 
-Este projeto é uma solução para o desafio Interactive Comments Section do site Frontend Mentor. O desafio consistia em construir uma seção de comentários com recursos interativos.
+Este projeto é uma solução para o desafio [Interactive comments section](https://www.frontendmentor.io/challenges/interactive-comments-section-iG1RugEG9) do site [Frontend Mentor](https://www.frontendmentor.io/). O desafio consistia em construir uma seção de comentários com recursos interativos.
 
-Link da projeto: https://interactive-comments-section-eta.vercel.app/
+## 🔗 Links
+
+- Solução: [aqui](https://www.frontendmentor.io/solutions/interactive-comments-section-react-typescript-and-styledcomponents-a2WP8D6dRG)
+- Link do projeto: [aqui](https://interactive-comments-section-eta.vercel.app/)
 
 ## 🛠 Tecnologias Utilizadas
 
@@ -52,4 +55,5 @@ $ npm run dev
 
 <img style="border-radius: 50px" alt="Daniel Grazziotti" title="Daniel Grazziotti" src="https://avatars.githubusercontent.com/grazziotti" height="100" width="100" />
 
-[Daniel Grazziotti](https://github.com/grazziotti)
+- Github - [@grazziotti](https://github.com/grazziotti)
+- Frontend Mentor - [@grazziotti](https://www.frontendmentor.io/profile/grazziotti)
